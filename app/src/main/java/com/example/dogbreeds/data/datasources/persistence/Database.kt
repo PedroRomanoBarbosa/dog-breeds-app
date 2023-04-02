@@ -1,16 +1,17 @@
 package com.example.dogbreeds.data.datasources.persistence
 
-import androidx.paging.PagingSource
 import androidx.room.*
 
 const val BREED_TABLE = "breeds"
 const val BREED_REMOTE_KEYS_TABLE = "breedRemoteKeys"
 
 @Entity(tableName = BREED_TABLE)
-data class Breed(
+data class BreedLocal(
     @PrimaryKey val id: Int,
     val name: String,
-    val imageUrl: String? = null,
+    val imageUrl: String,
+    val page: Int,
+    val total: Int,
 )
 
 @Entity(tableName = BREED_REMOTE_KEYS_TABLE)
@@ -24,10 +25,15 @@ data class BreedRemoteKeys(
 @Dao
 interface BreedsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(breeds: List<Breed>)
+    suspend fun insertAll(breeds: List<BreedLocal>)
 
+    /*
     @Query("SELECT * FROM $BREED_TABLE ORDER BY name ASC")
     fun pagingSource(): PagingSource<Int, Breed>
+     */
+
+    @Query("SELECT * FROM $BREED_TABLE WHERE page = :page ORDER BY name ASC")
+    fun getBreedsByPage(page: Int): List<BreedLocal>
 
     @Query("DELETE FROM $BREED_TABLE")
     suspend fun clearAll()
@@ -45,7 +51,7 @@ interface RemoteKeysDao {
     fun clearRemoteKeys()
 }
 
-@Database(version = 1, entities = [Breed::class, BreedRemoteKeys::class])
+@Database(version = 1, entities = [BreedLocal::class, BreedRemoteKeys::class])
 abstract class AppDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_NAME = "Database"

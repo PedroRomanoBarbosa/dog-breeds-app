@@ -3,7 +3,7 @@ package com.example.dogbreeds.data.datasources
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
-import com.example.dogbreeds.data.datasources.persistence.Breed
+import com.example.dogbreeds.data.datasources.persistence.BreedLocal
 import com.example.dogbreeds.data.datasources.persistence.BreedRemoteKeys
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.datasources.remote.BreedDTO
@@ -17,13 +17,13 @@ class BreedsRemoteMediator(
     private val initialPage: Int = 0,
     private val database: AppDatabase,
     private val apiClient: DogApiClient,
-) : RemoteMediator<Int, Breed>() {
+) : RemoteMediator<Int, BreedLocal>() {
     private val breedsDao = database.breedsDao()
     private val remoteKeysDao = database.remoteKeysDao()
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, Breed>
+        state: PagingState<Int, BreedLocal>
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -75,7 +75,7 @@ class BreedsRemoteMediator(
                 )
             }
             remoteKeysDao.insertAll(keys)
-            breedsDao.insertAll(breeds.map { Breed(it.id, it.name, it.image.url) })
+            breedsDao.insertAll(breeds.map { BreedLocal(it.id, it.name, it.image.url, page = 0, total = 0) })
         }
         return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
     }

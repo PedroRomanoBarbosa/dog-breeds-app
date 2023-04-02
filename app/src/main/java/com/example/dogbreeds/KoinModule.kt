@@ -1,6 +1,8 @@
 package com.example.dogbreeds
 
 import androidx.room.Room
+import coil.ImageLoader
+import coil.disk.DiskCache
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.repositories.BreedsRepository
@@ -17,6 +19,14 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val startModule = module(createdAtStart = true) {
+    single {
+        ImageLoader.Builder(androidContext())
+            .crossfade(true)
+            .diskCache {
+                DiskCache.Builder().maxSizePercent(0.1).build()
+            }
+            .build()
+    }
     single { NetworkRepository(androidContext(), CoroutineScope(Dispatchers.Default)) } bind INetworkRepository::class
     single {
         Room.databaseBuilder(
