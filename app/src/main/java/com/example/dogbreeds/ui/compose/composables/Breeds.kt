@@ -1,7 +1,6 @@
 package com.example.dogbreeds.ui.compose.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,7 +26,7 @@ import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Breeds(
     breedsViewModel: BreedsViewModel,
@@ -82,13 +81,13 @@ fun Breeds(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(itemHeight)
-                            .then(if (loading) Modifier.shimmer() else Modifier)
-                            .clickable(enabled = breedItem != null) {
-                                breedItem?.let {
-                                    breedsViewModel.onBreedClick(it.id)
-                                }
-                            },
+                            .then(if (loading) Modifier.shimmer() else Modifier),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                        onClick = {
+                            breedItem?.let {
+                                breedsViewModel.onBreedClick(it.id)
+                            }
+                        },
                     ) {
                         Box {
                             AsyncImage(
