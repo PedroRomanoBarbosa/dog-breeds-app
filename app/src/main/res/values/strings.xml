@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Dog Breeds</string>
+    <string name="breeds">Breeds</string>
+    <string name="search">Search</string>
+
+    <string name="article_image">article image</string>
+    <string name="retry">Retry</string>
+    <string name="no_headlines">There are no headlines. Please try again.</string>
+    <string name="go_to_network_settings">Go to network settings</string>
+    <string name="there_is_no_connection">There is no connection</string>
+    <string name="load_failed">Loading articles failed</string>
+    <string name="load_more_failed">Loading more articles failed</string>
+    <string name="refresh_failed">Refreshing feed failed</string>
+
+    <!-- Content Description -->
+    <string name="content_description_list_view_button">List view button</string>
+    <string name="content_description_grid_view_button">Grid view button</string>
+</resources>
