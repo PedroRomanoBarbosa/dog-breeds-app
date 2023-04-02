@@ -17,10 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.dogbreeds.ui.compose.screens.DisplayMode
+import com.example.dogbreeds.ui.launchNetworkSettings
 import com.example.dogbreeds.viewmodels.BreedsViewModel
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.flow.launchIn
@@ -32,6 +34,8 @@ fun Breeds(
     breedsViewModel: BreedsViewModel,
     displayMode: DisplayMode,
 ) {
+    val context = LocalContext.current
+
     val breedsState = breedsViewModel.state.collectAsState()
     val breeds = breedsState.value.breedItems
     val loading = breedsState.value.loading
@@ -43,7 +47,12 @@ fun Breeds(
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         breedsViewModel.event.onEach {
-            snackbarHostState.showSnackbar("Hello there")
+            val result = snackbarHostState.showSnackbar(
+                message = "An error has occurred. Check internet settings",
+                actionLabel = "Open",
+            )
+
+            if (result == SnackbarResult.ActionPerformed) launchNetworkSettings(context)
         }.launchIn(scope)
     }
 
@@ -83,9 +92,10 @@ fun Breeds(
                             .height(itemHeight)
                             .then(if (loading) Modifier.shimmer() else Modifier),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                        enabled = breedItem != null,
                         onClick = {
                             breedItem?.let {
-                                breedsViewModel.onBreedClick(it.id)
+                                breedsViewModel.onBreedClick(it.id, it.label)
                             }
                         },
                     ) {

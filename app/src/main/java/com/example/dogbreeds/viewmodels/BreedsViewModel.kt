@@ -67,9 +67,9 @@ class BreedsViewModel(
         }
     }
 
-    fun onBreedClick(breedId: Int) {
+    fun onBreedClick(breedId: Int, name: String) {
         viewModelScope.launch {
-            _navigation.emit(Navigation.BreedDetailsScreen(id = breedId))
+            _navigation.emit(Navigation.BreedDetailsScreen(id = breedId, name))
         }
     }
 
@@ -100,7 +100,7 @@ class BreedsViewModel(
     data class BreedItem(
         val id: Int,
         val label: String,
-        val imageUrl: String,
+        val imageUrl: String?,
     )
 
     /**
@@ -121,7 +121,7 @@ class BreedsViewModel(
      * TODO
      */
     sealed interface Navigation : ScreenNavigation {
-        data class BreedDetailsScreen(val id: Int) : Navigation
+        data class BreedDetailsScreen(val id: Int, val name: String) : Navigation
     }
 
     /**

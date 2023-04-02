@@ -6,6 +6,7 @@ import coil.disk.DiskCache
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.repositories.BreedsRepository
+import com.example.dogbreeds.viewmodels.BreedDetailsViewModel
 import com.example.dogbreeds.viewmodels.BreedsViewModel
 import com.example.dogbreeds.viewmodels.HomeViewModel
 import io.ktor.client.engine.android.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -43,4 +45,5 @@ val appModule = module {
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::BreedsViewModel)
+    viewModel { (breedId: Int, name: String) -> BreedDetailsViewModel(breedId, name, get()) }
 }

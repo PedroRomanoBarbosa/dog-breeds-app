@@ -13,6 +13,7 @@
     <string name="refresh_failed">Refreshing feed failed</string>
 
     <!-- Content Description -->
+    <string name="content_description_back_button">navigate to previous screen</string>
     <string name="content_description_list_view_button">List view button</string>
     <string name="content_description_grid_view_button">Grid view button</string>
 </resources>

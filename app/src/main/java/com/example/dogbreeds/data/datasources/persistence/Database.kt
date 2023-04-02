@@ -9,7 +9,11 @@ const val BREED_REMOTE_KEYS_TABLE = "breedRemoteKeys"
 data class BreedLocal(
     @PrimaryKey val id: Int,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String? = null,
+    val category: String? = null,
+    val origin: String? = null,
+    val temperament: String? = null,
+    // Pagination
     val page: Int,
     val total: Int,
 )
@@ -34,6 +38,9 @@ interface BreedsDao {
 
     @Query("SELECT * FROM $BREED_TABLE WHERE page = :page ORDER BY name ASC")
     fun getBreedsByPage(page: Int): List<BreedLocal>
+
+    @Query("SELECT * FROM $BREED_TABLE WHERE id = :breedId")
+    fun getBreedById(breedId: Int): BreedLocal
 
     @Query("DELETE FROM $BREED_TABLE")
     suspend fun clearAll()

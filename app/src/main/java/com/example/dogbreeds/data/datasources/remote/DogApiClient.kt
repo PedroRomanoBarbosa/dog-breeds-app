@@ -7,6 +7,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.Serializable
 
@@ -14,7 +15,10 @@ import kotlinx.serialization.Serializable
 data class BreedDTO(
     val id: Int,
     val name: String,
-    val image: Image,
+    val image: Image? = null,
+    val temperament: String? = null,
+    val breedGroup: String? = null,
+    val origin: String? = null,
 ) {
     @Serializable
     data class Image(

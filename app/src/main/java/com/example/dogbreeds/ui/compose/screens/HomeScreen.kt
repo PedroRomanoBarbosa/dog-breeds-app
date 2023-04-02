@@ -58,6 +58,13 @@ fun AppBarButton(
 }
 
 @Composable
+fun BackAppBarButton(onClick: () -> Unit) = AppBarButton(
+    onClick,
+    resourceId = R.drawable.baseline_arrow_back_24,
+    contentDescriptionId = R.string.content_description_back_button,
+)
+
+@Composable
 fun ListViewAppBarButton(onClick: () -> Unit) = AppBarButton(
     onClick,
     resourceId = R.drawable.round_table_rows_24,
@@ -85,16 +92,16 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
     breedsViewModel: BreedsViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+
     val navController = rememberNavController()
     val homeState by homeViewModel.state.collectAsState()
-
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         breedsViewModel.navigation.onEach {
             when(it) {
                 is BreedsViewModel.Navigation.BreedDetailsScreen -> {
-                    launchBreedDetailsActivity(context, it.id)
+                    launchBreedDetailsActivity(context, it.id, it.name)
                 }
             }
         }.launchIn(this)

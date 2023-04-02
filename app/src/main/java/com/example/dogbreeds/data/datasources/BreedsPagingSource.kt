@@ -7,6 +7,7 @@ import com.example.dogbreeds.data.datasources.persistence.BreedLocal
 import com.example.dogbreeds.data.datasources.persistence.BreedRemoteKeys
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.datasources.remote.BreedDTO
+import com.example.dogbreeds.toLocal
 import io.ktor.client.call.*
 
 /**
@@ -75,7 +76,7 @@ class BreedsRemoteMediator(
                 )
             }
             remoteKeysDao.insertAll(keys)
-            breedsDao.insertAll(breeds.map { BreedLocal(it.id, it.name, it.image.url, page = 0, total = 0) })
+            breedsDao.insertAll(breeds.map { it.toLocal(page = 0, total = 0) })
         }
         return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
     }

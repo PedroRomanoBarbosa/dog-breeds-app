@@ -1,9 +1,10 @@
 package com.example.dogbreeds.data.repositories
 
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
-import com.example.dogbreeds.data.datasources.persistence.BreedLocal
 import com.example.dogbreeds.data.datasources.remote.BreedDTO
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
+import com.example.dogbreeds.toDomain
+import com.example.dogbreeds.toLocal
 import com.example.domain.Breed
 import io.ktor.client.call.*
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,13 @@ const val LIMIT = 20
  */
 interface IBreedsRepository {
     suspend fun getBreedPage(pageIndex: Int, refresh: Boolean = false): Flow<Result<BreedPage>>
+
+    suspend fun getBreedById(breedId: Int): Breed
 }
 
+/**
+ * TODO
+ */
 data class BreedPage(
     val breeds: List<Breed?>,
     val hasPrev: Boolean,
@@ -42,6 +48,11 @@ class BreedsRepository(
     }
 
     private var paginationCount = 0
+
+    override suspend fun getBreedById(breedId: Int) = withContext(Dispatchers.IO) {
+        // TODO
+        database.breedsDao().getBreedById(breedId).toDomain()
+    }
 
     override suspend fun getBreedPage(pageIndex: Int, refresh: Boolean) = flow {
         if (!refresh) {
@@ -67,7 +78,7 @@ class BreedsRepository(
                     BreedPage(
                         hasPrev = pageIndex > 0,
                         hasNext = pageIndex * LIMIT < paginationCount,
-                        breeds = localBreeds.map { Breed(id = it.id, name = it.name, imageUrl = it.imageUrl) },
+                        breeds = localBreeds.map { it.toDomain() },
                     ))
                 )
 
@@ -76,26 +87,30 @@ class BreedsRepository(
         }
 
         try {
-            delay(3000)
+            // delay(3000)
 
             val response = withContext(Dispatchers.IO) {
                 api.getBreeds(LIMIT, pageIndex)
             }
 
-            val breeds: List<BreedDTO> = response.body()
-            val total = response.headers["pagination-count"]?.toIntOrNull() ?: 0
+            val breeds: List<BreedDTO> = runCatching { response.body<List<BreedDTO>>() }.getOrElse {
+                println("EXCEPTION: $it")
+
+                return@flow
+            }
+            val total = response.headers["pagination-count"]?.toIntOrNull() ?: run {
+                emit(Result.failure(IllegalStateException("Invalid pagination count")))
+
+                return@flow
+            }
             paginationCount = total
 
             withContext(Dispatchers.IO) {
-                database.breedsDao().insertAll(breeds = breeds.map {
-                    BreedLocal(
-                        id = it.id,
-                        name = it.name,
-                        imageUrl = it.image.url,
-                        page = pageIndex,
-                        total = paginationCount,
-                    )
-                })
+                database.breedsDao().insertAll(
+                    breeds = breeds.map {
+                        it.toLocal(page = pageIndex, total = paginationCount)
+                    },
+                )
             }
 
             emit(
@@ -103,7 +118,7 @@ class BreedsRepository(
                     BreedPage(
                         hasPrev = pageIndex > 0,
                         hasNext = pageIndex * LIMIT < total,
-                        breeds = breeds.map { Breed(id = it.id, name = it.name, it.image.url) },
+                        breeds = breeds.map { it.toDomain() },
                     )
                 )
             )
