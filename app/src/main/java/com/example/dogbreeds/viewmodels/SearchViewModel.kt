@@ -67,6 +67,16 @@ class SearchViewModel(
         }
     }
 
+    fun clearSearch() {
+        _state.update {
+            it.copy(
+                searchBreedItems = emptyList(),
+                text = String(),
+                query = String(),
+            )
+        }
+    }
+
     fun onSearchBreedClick(breedId: Int, name: String) {
         viewModelScope.launch {
             _navigation.emit(Navigation.BreedDetailsScreen(id = breedId, name))

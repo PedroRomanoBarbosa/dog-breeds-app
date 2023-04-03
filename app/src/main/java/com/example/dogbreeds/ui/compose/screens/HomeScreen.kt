@@ -98,6 +98,8 @@ fun HomeScreen(
     val context = LocalContext.current
 
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     val homeState by homeViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -124,16 +126,15 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.app_name)) },
                 actions = {
-                    ListViewAppBarButton { displayMode = DisplayMode.LIST }
-                    GridViewAppBarButton { displayMode = DisplayMode.GRID }
+                    if (currentDestination?.hierarchy?.any { it.route == Screen.Breeds.route } == true) {
+                        ListViewAppBarButton { displayMode = DisplayMode.LIST }
+                        GridViewAppBarButton { displayMode = DisplayMode.GRID }
+                    }
                 }
             )
         },
         bottomBar = {
             NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
                 NavigationBarItem(
                     selected = currentDestination?.hierarchy?.any { it.route == Screen.Breeds.route } == true,
                     onClick = {

@@ -1,15 +1,15 @@
 package com.example.dogbreeds.ui.compose.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,20 +26,31 @@ fun Search(
     val state = searchViewModel.state.collectAsState()
     val searchItems = state.value.searchBreedItems
     val loading = state.value.loading
+    val text = state.value.text
     val query = state.value.query
     val noItems = state.value.searchBreedItems.isEmpty()
 
     Column(Modifier.padding(start = 16.dp, end = 16.dp)) {
         TextField(
+            trailingIcon = {
+                if (text.isNotEmpty()) {
+                    IconButton(onClick = { searchViewModel.clearSearch() }) {
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Clear search")
+                    }
+                }
+            },
+            placeholder = { Text(text = "Search for a breed name") },
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.text,
+            value = text,
             onValueChange = { searchViewModel.setSearchText(it) },
         )
 
         if (query.isNotEmpty() && !loading && noItems) {
             Box(modifier = Modifier.weight(1f)) {
                 Column(
-                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
