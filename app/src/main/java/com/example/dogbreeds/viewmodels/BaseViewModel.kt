@@ -24,7 +24,7 @@ interface ViewModelEvent
  */
 abstract class BaseViewModel<S, N : ScreenNavigation, E : ViewModelEvent?>(
     initialState: S,
-    private val tag: String,
+    protected val tag: String,
 ) : ViewModel() {
     protected val _navigation = MutableSharedFlow<N>()
     val navigation = _navigation.asSharedFlow()

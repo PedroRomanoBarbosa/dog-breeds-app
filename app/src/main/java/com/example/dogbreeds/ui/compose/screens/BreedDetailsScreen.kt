@@ -1,5 +1,8 @@
 package com.example.dogbreeds.ui.compose.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,12 +87,14 @@ fun BreedDetailsScreen(
     onBack: () -> Unit = {},
 ) {
     val breedDetailsState = breedDetailsViewModel.state.collectAsState()
+    val name = breedDetailsState.value.name
+    val detailsSection = breedDetailsState.value.detailsSection
 
     Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = { BackAppBarButton(onBack) },
-                title = { Text(text = "${breedDetailsState.value.name} Details") },
+                title = { Text(text = "$name Details") },
             )
         },
     ) { innerPadding ->
@@ -96,24 +102,39 @@ fun BreedDetailsScreen(
             .fillMaxSize()
             .padding(innerPadding)
         ) {
-            when (val state = breedDetailsState.value) {
-                is BreedDetailsViewModel.State.Loading -> {
-                    Details(name = state.name, loading = true)
+            when (detailsSection) {
+                is BreedDetailsViewModel.DetailsSection.Loading -> {
+                    Details(name = name, loading = true)
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.Black,
                     )
                 }
-                is BreedDetailsViewModel.State.Details -> {
+                is BreedDetailsViewModel.DetailsSection.Details -> {
                     Details(
                         loading = false,
-                        name = state.name,
-                        imageUrl = state.imageUrl,
-                        category = state.category,
-                        origin = state.origin,
-                        temperament = state.temperament,
+                        name = name,
+                        imageUrl = detailsSection.imageUrl,
+                        category = detailsSection.category,
+                        origin = detailsSection.origin,
+                        temperament = detailsSection.temperament,
                     )
                 }
+            }
+
+            AnimatedVisibility(
+                visible = !breedDetailsState.value.hasNetwork,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Text(
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Red),
+                    text = "No network connection",
+                )
             }
         }
     }

@@ -47,5 +47,5 @@ val appModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::BreedsViewModel)
     viewModelOf(::SearchViewModel)
-    viewModel { (breedId: Int, name: String) -> BreedDetailsViewModel(breedId, name, get()) }
+    viewModel { (breedId: Int, name: String) -> BreedDetailsViewModel(breedId, name, get(), get()) }
 }
