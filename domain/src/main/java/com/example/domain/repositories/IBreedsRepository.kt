@@ -10,6 +10,7 @@ data class BreedPage(
     val breeds: List<Breed?>,
     val hasPrev: Boolean,
     val hasNext: Boolean,
+    val totalPages: Int,
 )
 
 /**

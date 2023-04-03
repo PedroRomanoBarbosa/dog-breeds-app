@@ -49,6 +49,7 @@ class BreedsViewModel(
                             loading = false,
                             refreshing = false,
                             currentPageIndex = pageIndex,
+                            totalPages = page.totalPages,
                             breedItems = page.breeds.map {
                                 it?.let {
                                     BreedItem(

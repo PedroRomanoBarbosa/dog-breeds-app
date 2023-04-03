@@ -56,3 +56,17 @@ fun buildLabelText(label: String, text: String) = buildAnnotatedString {
 suspend fun enableRequestDelay() {
     if (REQUEST_DELAY_ENABLED) delay(REQUEST_DELAY)
 }
+
+/**
+ * TODO
+ */
+fun calculateTotalPages(total: Int, limit: Int): Int {
+    var num = total / limit
+    if (total % limit > 0) num++
+    return num
+}
+
+/**
+ * TODO
+ */
+fun hasNextPage(pageIndex: Int, limit: Int, total: Int) = (pageIndex + 1) * limit < total

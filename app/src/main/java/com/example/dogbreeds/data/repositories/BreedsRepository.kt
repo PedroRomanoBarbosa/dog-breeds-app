@@ -1,13 +1,11 @@
 package com.example.dogbreeds.data.repositories
 
+import com.example.dogbreeds.*
 import com.example.dogbreeds.Configuration.PAGE_LIMIT
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
 import com.example.dogbreeds.data.datasources.remote.BreedDTO
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.datasources.remote.ImageDTO
-import com.example.dogbreeds.enableRequestDelay
-import com.example.dogbreeds.toDomain
-import com.example.dogbreeds.toLocal
 import com.example.domain.Breed
 import com.example.domain.repositories.BreedPage
 import com.example.domain.repositories.IBreedsRepository
@@ -63,8 +61,9 @@ class BreedsRepository(
                 Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * PAGE_LIMIT < paginationCount,
+                        hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
                         breeds = List(PAGE_LIMIT) { null },
+                        totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
                     )
                 )
             )
@@ -80,8 +79,9 @@ class BreedsRepository(
                     Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * PAGE_LIMIT < paginationCount,
+                        hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
                         breeds = localBreeds.map { it.toDomain() },
+                        totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
                     ))
                 )
 
@@ -98,7 +98,9 @@ class BreedsRepository(
 
             val breedDTOs: List<BreedDTO> = response.body()
             val total = response.headers["pagination-count"]?.toIntOrNull() ?: run {
-                emit(Result.failure(IllegalStateException("Invalid pagination count")))
+                emit(
+                    Result.failure(IllegalStateException("Invalid pagination count"))
+                )
 
                 return@flow
             }
@@ -116,8 +118,9 @@ class BreedsRepository(
                 Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * PAGE_LIMIT < total,
+                        hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
                         breeds = breedDTOs.map { it.toDomain() },
+                        totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
                     )
                 )
             )

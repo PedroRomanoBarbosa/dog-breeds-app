@@ -149,7 +149,7 @@ fun Breeds(
             Button(enabled = breedsState.value.previousEnabled, onClick = { breedsViewModel.previousPage() }) {
                 Text(text = stringResource(id = R.string.prev))
             }
-            Text(text = "Page: ${breedsState.value.currentPageIndex + 1}")
+            Text(text = "${breedsState.value.currentPageIndex + 1}/${breedsState.value.totalPages}")
             Button(enabled = breedsState.value.nextEnabled, onClick = { breedsViewModel.nextPage() }) {
                 Text(text = stringResource(id = R.string.next))
             }
