@@ -1,10 +1,11 @@
 package com.example.dogbreeds.data.repositories
 
-import com.example.dogbreeds.BuildConfig
+import com.example.dogbreeds.Configuration.PAGE_LIMIT
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
 import com.example.dogbreeds.data.datasources.remote.BreedDTO
 import com.example.dogbreeds.data.datasources.remote.DogApiClient
 import com.example.dogbreeds.data.datasources.remote.ImageDTO
+import com.example.dogbreeds.enableRequestDelay
 import com.example.dogbreeds.toDomain
 import com.example.dogbreeds.toLocal
 import com.example.domain.Breed
@@ -12,29 +13,8 @@ import com.example.domain.repositories.BreedPage
 import com.example.domain.repositories.IBreedsRepository
 import io.ktor.client.call.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-
-/**
- * TODO
- */
-const val LIMIT = 20
-
-/**
- * TODO
- */
-const val REQUEST_DELAY = 1000L
-
-/**
- * TODO
- */
-val REQUEST_DELAY_ENABLED: Boolean = BuildConfig.REQUEST_DELAY_ENABLED
-
-suspend fun enableRequestDelay() {
-    if (REQUEST_DELAY_ENABLED) delay(REQUEST_DELAY)
-}
 
 /**
  * TODO
@@ -81,8 +61,8 @@ class BreedsRepository(
                 Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * LIMIT < paginationCount,
-                        breeds = List(LIMIT) { null },
+                        hasNext = pageIndex * PAGE_LIMIT < paginationCount,
+                        breeds = List(PAGE_LIMIT) { null },
                     )
                 )
             )
@@ -98,7 +78,7 @@ class BreedsRepository(
                     Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * LIMIT < paginationCount,
+                        hasNext = pageIndex * PAGE_LIMIT < paginationCount,
                         breeds = localBreeds.map { it.toDomain() },
                     ))
                 )
@@ -108,12 +88,10 @@ class BreedsRepository(
         }
 
         try {
-            // delay(3000)
-
             val response = withContext(Dispatchers.IO) {
                 enableRequestDelay()
 
-                api.getBreeds(LIMIT, pageIndex)
+                api.getBreeds(PAGE_LIMIT, pageIndex)
             }
 
             val breedDTOs: List<BreedDTO> = response.body()
@@ -136,7 +114,7 @@ class BreedsRepository(
                 Result.success(
                     BreedPage(
                         hasPrev = pageIndex > 0,
-                        hasNext = pageIndex * LIMIT < total,
+                        hasNext = pageIndex * PAGE_LIMIT < total,
                         breeds = breedDTOs.map { it.toDomain() },
                     )
                 )

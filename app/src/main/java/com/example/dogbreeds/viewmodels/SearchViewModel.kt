@@ -35,9 +35,11 @@ class SearchViewModel(
         }.launchIn(viewModelScope)
 
         _textSearch.debounce(DEBOUNCE_DELAY_MS).onEach {
-            _state.update { state -> state.copy(query = it) }
+            if (it.isNotBlank()) {
+                _state.update { state -> state.copy(query = it) }
 
-            search(it)
+                search(it)
+            }
         }.launchIn(viewModelScope)
 
         networkRepository.networkAvailable.onEach {
