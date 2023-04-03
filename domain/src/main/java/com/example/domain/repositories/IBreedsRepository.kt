@@ -21,5 +21,5 @@ interface IBreedsRepository {
 
     suspend fun getBreedById(breedId: Int): Breed
 
-    suspend fun searchBreedsByTerm(term: String): List<Breed>
+    suspend fun searchBreedsByTerm(term: String): Result<List<Breed>>
 }

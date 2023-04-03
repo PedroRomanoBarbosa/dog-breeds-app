@@ -1,5 +1,6 @@
 package com.example.dogbreeds.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.dogbreeds.NetworkRepository
 import com.example.dogbreeds.data.repositories.BreedsRepository
@@ -27,10 +28,13 @@ class SearchViewModel(
 
     init {
         _textSearch.onEach {
-            if (it.isEmpty()) {
-                _state.update { state -> state.copy(text = it, searchBreedItems = emptyList()) }
-            } else {
-                _state.update { state -> state.copy(text = it) }
+            _state.update { state ->
+                state.copy(
+                    text = it,
+                    query = String(),
+                    loading = it.isNotEmpty(),
+                    searchBreedItems = if (it.isEmpty()) emptyList() else state.searchBreedItems,
+                )
             }
         }.launchIn(viewModelScope)
 
@@ -48,12 +52,24 @@ class SearchViewModel(
     }
 
     private fun search(term: String) {
+        _state.update { it.copy(loading = true) }
+
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            val breeds = breedsRepository.searchBreedsByTerm(term)
+            val result = breedsRepository.searchBreedsByTerm(term)
+
+            val breeds = result.getOrElse {
+                Log.e(tag, "Occurred an error when searching for breeds", it)
+
+                _event.emit(Event.SEARCH_FAILED)
+                _state.update { state -> state.copy(loading = false) }
+
+                return@launch
+            }
 
             _state.update { state ->
                 state.copy(
+                    loading = false,
                     searchBreedItems = breeds.map { breed ->
                         SearchItem(
                             id = breed.id,
@@ -107,7 +123,7 @@ class SearchViewModel(
         val hasNetwork: Boolean,
         val text: String = String(),
         val query: String = String(),
-        val loading: Boolean = true,
+        val loading: Boolean = false,
         val searchBreedItems: List<SearchItem> = emptyList(),
     )
 

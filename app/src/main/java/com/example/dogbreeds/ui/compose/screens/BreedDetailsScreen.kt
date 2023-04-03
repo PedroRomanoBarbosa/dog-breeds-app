@@ -115,7 +115,7 @@ fun BreedDetailsScreen(
                     Details(name = name, loading = true)
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = Color.Black,
+                        color = Color.DarkGray,
                     )
                 }
                 is BreedDetailsViewModel.DetailsSection.Details -> {

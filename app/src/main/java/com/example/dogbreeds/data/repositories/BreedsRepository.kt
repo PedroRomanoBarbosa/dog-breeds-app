@@ -42,7 +42,8 @@ class BreedsRepository(
         }
     }
 
-    override suspend fun searchBreedsByTerm(term: String): List<Breed> {
+    // TODO Could implement here a pagination as well but with a load more instead of next/prev keys
+    override suspend fun searchBreedsByTerm(term: String): Result<List<Breed>> {
         if (networkRepository.networkAvailable.value) {
             runCatching {
                 val response = withContext(Dispatchers.IO) {
@@ -53,14 +54,14 @@ class BreedsRepository(
 
                 val breedsDTO: List<BreedDTO> = response.body()
 
-                return breedsDTO.map { it.toDomain() }
+                return Result.success(breedsDTO.map { it.toDomain() })
             }.onFailure {
-                return emptyList()
+                return Result.failure(it)
             }
         }
 
         // TODO Search from local database
-        return emptyList()
+        return Result.success(emptyList())
     }
 
     override suspend fun getBreedPage(pageIndex: Int, refresh: Boolean) = flow {
@@ -85,12 +86,13 @@ class BreedsRepository(
 
                 emit(
                     Result.success(
-                    BreedPage(
-                        hasPrev = pageIndex > 0,
-                        hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
-                        breeds = localBreeds.map { it.toDomain() },
-                        totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
-                    ))
+                        BreedPage(
+                            hasPrev = pageIndex > 0,
+                            hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
+                            breeds = localBreeds.map { it.toDomain() },
+                            totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
+                        )
+                    )
                 )
 
                 return@flow
