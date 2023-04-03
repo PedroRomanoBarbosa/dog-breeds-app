@@ -58,7 +58,10 @@ class DogApiClient(engine: HttpClientEngine) {
     }
 
     /**
-     * TODO
+     * Fetches the breeds from the [page] with a given [limit]
+     *
+     * @param limit The number of maximum results per page
+     * @param page The number of the page to fetch
      */
     suspend fun getBreeds(limit: Int, page: Int) = httpClient.get("$DOG_API_END_POINT/breeds") {
         url {
@@ -70,7 +73,9 @@ class DogApiClient(engine: HttpClientEngine) {
     }
 
     /**
-     * TODO
+     * Search for all the breeds that have [term] in the name
+     *
+     * @param term The query for the search
      */
     suspend fun searchBreeds(term: String) = httpClient.get("$DOG_API_END_POINT/breeds/search") {
         url {
@@ -81,12 +86,12 @@ class DogApiClient(engine: HttpClientEngine) {
     }
 
     /**
-     * TODO
+     * Fetches a breed by [breedId]
      */
     suspend fun getBreedById(breedId: Int) = httpClient.get("$DOG_API_END_POINT/breeds/$breedId")
 
     /**
-     * TODO
+     * Fetches an image by [imageId]
      */
     suspend fun getImageById(imageId: String) = httpClient.get("$DOG_API_END_POINT/images/$imageId")
 }

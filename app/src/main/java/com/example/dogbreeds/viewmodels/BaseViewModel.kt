@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * TODO
+ * Base Screen Navigation
  */
 sealed interface ScreenNavigation {
     object Back : ScreenNavigation
 }
 
 /**
- * TODO
+ * Base View Model Event
  */
 interface ViewModelEvent
 
 /**
- * TODO
+ * Base View Model
  */
 abstract class BaseViewModel<S, N : ScreenNavigation, E : ViewModelEvent?>(
     initialState: S,

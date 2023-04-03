@@ -80,7 +80,7 @@ fun GridViewAppBarButton(onClick: () -> Unit) = AppBarButton(
 )
 
 /**
- * TODO
+ * Display mode that represents a [LIST] or a [GRID]
  */
 enum class DisplayMode {
     LIST,

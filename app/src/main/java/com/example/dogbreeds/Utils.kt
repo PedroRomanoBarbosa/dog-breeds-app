@@ -1,5 +1,6 @@
 package com.example.dogbreeds
 
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -41,9 +42,9 @@ fun BreedDTO.toLocal(page: Int, total: Int) = BreedLocal(
 )
 
 /**
- * TODO
+ * Builds an [AnnotatedString] with a [label] in bold and the [text]
  */
-fun buildLabelText(label: String, text: String) = buildAnnotatedString {
+fun buildLabelText(label: String, text: String): AnnotatedString = buildAnnotatedString {
     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
         append(label)
     }
@@ -51,14 +52,15 @@ fun buildLabelText(label: String, text: String) = buildAnnotatedString {
 }
 
 /**
- * TODO
+ * Checks whether the mock delay [BuildConfig.REQUEST_DELAY_ENABLED] is enabled and delays the
+ * coroutine by [REQUEST_DELAY]
  */
 suspend fun enableRequestDelay() {
     if (REQUEST_DELAY_ENABLED) delay(REQUEST_DELAY)
 }
 
 /**
- * TODO
+ * Calculates the total number of pages given a [total] and a [limit]
  */
 fun calculateTotalPages(total: Int, limit: Int): Int {
     var num = total / limit
@@ -67,6 +69,6 @@ fun calculateTotalPages(total: Int, limit: Int): Int {
 }
 
 /**
- * TODO
+ * Check if there is a next page iven a [pageIndex], [limit] and a [total]
  */
 fun hasNextPage(pageIndex: Int, limit: Int, total: Int) = (pageIndex + 1) * limit < total

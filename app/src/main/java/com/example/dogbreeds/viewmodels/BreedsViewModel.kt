@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * TODO
+ * Breeds View Model
  */
 class BreedsViewModel(
     private val breedsRepository: BreedsRepository,
@@ -107,7 +107,7 @@ class BreedsViewModel(
     )
 
     /**
-     * TODO
+     * Breeds State
      */
     data class State(
         val hasNetwork: Boolean,
@@ -121,14 +121,14 @@ class BreedsViewModel(
     )
 
     /**
-     * TODO
+     * Breeds Navigation
      */
     sealed interface Navigation : ScreenNavigation {
         data class BreedDetailsScreen(val id: Int, val name: String) : Navigation
     }
 
     /**
-     * TODO
+     * Breeds Event
      */
     enum class Event : ViewModelEvent {
         FAILED_TO_LOAD

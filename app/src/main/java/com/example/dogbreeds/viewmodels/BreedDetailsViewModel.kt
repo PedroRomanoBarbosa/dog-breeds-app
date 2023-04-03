@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * TODO
+ * Breed Details View Model
  */
 class BreedDetailsViewModel(
     breedId: Int,
@@ -58,7 +58,7 @@ class BreedDetailsViewModel(
     )
 
     /**
-     * TODO
+     * Represents a detail section in the screen. Can be [Loading] or [Details]
      */
     sealed interface DetailsSection {
         object Loading : DetailsSection
@@ -72,12 +72,12 @@ class BreedDetailsViewModel(
     }
 
     /**
-     * TODO
+     * Breed Details Navigation
      */
     sealed interface Navigation : ScreenNavigation
 
     /**
-     * TODO
+     * Breed Details Event
      */
     enum class Event : ViewModelEvent
 }

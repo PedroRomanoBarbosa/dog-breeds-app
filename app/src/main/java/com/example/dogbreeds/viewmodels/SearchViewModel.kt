@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 const val DEBOUNCE_DELAY_MS = 500L
 
 /**
- * TODO
+ * Search View Model
  */
 @OptIn(FlowPreview::class)
 class SearchViewModel(
@@ -101,7 +101,7 @@ class SearchViewModel(
     )
 
     /**
-     * TODO
+     * Search State
      */
     data class State(
         val hasNetwork: Boolean,
@@ -112,14 +112,14 @@ class SearchViewModel(
     )
 
     /**
-     * TODO
+     * Search Navigation
      */
     sealed interface Navigation : ScreenNavigation {
         data class BreedDetailsScreen(val id: Int, val name: String) : Navigation
     }
 
     /**
-     * TODO
+     * Search Event
      */
     enum class Event : ViewModelEvent {
         SEARCH_FAILED

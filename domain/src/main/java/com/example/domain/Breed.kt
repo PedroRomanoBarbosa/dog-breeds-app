@@ -1,7 +1,7 @@
 package com.example.domain
 
 /**
- * TODO
+ * Domain object that represents a dog breed and has all the information related to it
  */
 data class Breed(
     val id: Int,

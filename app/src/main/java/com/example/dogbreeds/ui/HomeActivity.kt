@@ -9,7 +9,7 @@ import com.example.dogbreeds.databinding.ActivityHomeBinding
 import com.example.dogbreeds.ui.compose.screens.HomeScreen
 
 /**
- * TODO
+ * Home Activity
  */
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

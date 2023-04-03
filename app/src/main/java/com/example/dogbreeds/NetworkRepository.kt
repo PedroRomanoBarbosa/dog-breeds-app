@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * TODO
+ * Interface that specifies a network repository. For mocking purposes
  */
 interface INetworkRepository {
     val networkAvailable: StateFlow<Boolean>
 }
 
 /**
- * TODO
+ * Network Repository that provides information related to the network status
  */
 class NetworkRepository(context: Context, coroutineScope: CoroutineScope) : INetworkRepository {
     private val _networkAvailable = MutableStateFlow(false)

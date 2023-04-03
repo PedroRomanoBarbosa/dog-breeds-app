@@ -12,7 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 /**
- * TODO
+ * Breed Details Activity
  */
 class BreedDetailsActivity : AppCompatActivity() {
     companion object {

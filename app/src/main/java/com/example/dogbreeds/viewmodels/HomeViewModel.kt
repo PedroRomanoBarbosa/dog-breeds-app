@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 /**
- * TODO
+ * Home View Model
  */
 class HomeViewModel(
     networkRepository: NetworkRepository,
@@ -22,19 +22,19 @@ class HomeViewModel(
     }
 
     /**
-     * TODO
+     * Home State
      */
     data class State(
         val hasNetwork: Boolean,
     )
 
     /**
-     * TODO
+     * Home Navigation
      */
     sealed interface Navigation : ScreenNavigation
 
     /**
-     * TODO
+     * Home Event
      */
     enum class Event : ViewModelEvent
 }

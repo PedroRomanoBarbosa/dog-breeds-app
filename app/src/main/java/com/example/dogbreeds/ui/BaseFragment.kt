@@ -6,7 +6,7 @@ import com.example.dogbreeds.viewmodels.ViewModelEvent
 import com.example.dogbreeds.viewmodels.ScreenNavigation
 
 /**
- * TODO
+ * Base Fragment to be used by the apps fragments
  */
 abstract class BaseFragment<N : ScreenNavigation, S, E : ViewModelEvent>(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId) {
     protected open fun onScreenNavigation(navigation: N) = Unit

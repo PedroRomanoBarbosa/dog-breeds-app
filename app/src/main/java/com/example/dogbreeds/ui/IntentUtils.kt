@@ -8,7 +8,7 @@ import com.example.dogbreeds.ui.BreedDetailsActivity.Companion.BREED_ID
 import com.example.dogbreeds.ui.BreedDetailsActivity.Companion.NAME
 
 /**
- * TODO
+ * Launches [BreedDetailsActivity] with a given [breedId] and [name]
  */
 fun launchBreedDetailsActivity(context: Context, breedId: Int, name: String) {
     Intent(context, BreedDetailsActivity::class.java).run {
@@ -20,7 +20,7 @@ fun launchBreedDetailsActivity(context: Context, breedId: Int, name: String) {
 }
 
 /**
- * TODO
+ * Launches the default network settings activity
  */
 fun launchNetworkSettings(context: Context) {
     ContextCompat.startActivity(

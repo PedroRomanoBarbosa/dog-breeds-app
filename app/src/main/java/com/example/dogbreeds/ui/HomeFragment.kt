@@ -11,7 +11,7 @@ import com.example.dogbreeds.viewmodels.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
- * TODO
+ * Home Fragment
  */
 class HomeFragment : BaseFragment<HomeViewModel.Navigation, HomeViewModel.State, HomeViewModel.Event>(R.layout.fragment_home) {
     private val binding by lazy { FragmentDogBreedsBinding.inflate(layoutInflater) }

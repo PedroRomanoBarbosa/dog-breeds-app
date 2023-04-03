@@ -4,7 +4,7 @@ import com.example.domain.Breed
 import kotlinx.coroutines.flow.Flow
 
 /**
- * TODO
+ * Represents a page of dog [Breed]s. Includes information about next, previous and total pages
  */
 data class BreedPage(
     val breeds: List<Breed?>,
@@ -14,7 +14,7 @@ data class BreedPage(
 )
 
 /**
- * TODO
+ * Domain interface that describes a Breed Repository
  */
 interface IBreedsRepository {
     suspend fun getBreedPage(pageIndex: Int, refresh: Boolean = false): Flow<Result<BreedPage>>
