@@ -42,6 +42,8 @@ android {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         buildConfigField 'String', 'DOG_API_KEY', "\"${properties.get("DOG_API_KEY")}\""
+
+        buildConfigField 'Boolean', 'REQUEST_DELAY_ENABLED', "false"
     }
 
     buildFeatures {

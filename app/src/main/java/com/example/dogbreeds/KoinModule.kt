@@ -9,6 +9,7 @@ import com.example.dogbreeds.data.repositories.BreedsRepository
 import com.example.dogbreeds.viewmodels.BreedDetailsViewModel
 import com.example.dogbreeds.viewmodels.BreedsViewModel
 import com.example.dogbreeds.viewmodels.HomeViewModel
+import com.example.dogbreeds.viewmodels.SearchViewModel
 import io.ktor.client.engine.android.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,5 +46,6 @@ val appModule = module {
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::BreedsViewModel)
+    viewModelOf(::SearchViewModel)
     viewModel { (breedId: Int, name: String) -> BreedDetailsViewModel(breedId, name, get()) }
 }

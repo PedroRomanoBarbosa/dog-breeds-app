@@ -17,14 +17,23 @@ data class BreedDTO(
     val name: String,
     val image: Image? = null,
     val temperament: String? = null,
-    val breedGroup: String? = null,
+    @SerialName("breed_group") // There was a bug when I used `breedGroup` for the name of he variable
+    val breed_group: String? = null,
     val origin: String? = null,
+    @SerialName("reference_image_id")
+    val reference_image_id: String? = null,
 ) {
     @Serializable
     data class Image(
         val url: String,
     )
 }
+
+@Serializable
+data class ImageDTO(
+    val id: String,
+    val url: String,
+)
 
 private const val DOG_API_END_POINT = "https://api.thedogapi.com/v1"
 
@@ -59,4 +68,25 @@ class DogApiClient(engine: HttpClientEngine) {
             }
         }
     }
+
+    /**
+     * TODO
+     */
+    suspend fun searchBreeds(term: String) = httpClient.get("$DOG_API_END_POINT/breeds/search") {
+        url {
+            with(parameters) {
+                append("q", term)
+            }
+        }
+    }
+
+    /**
+     * TODO
+     */
+    suspend fun getBreedById(breedId: Int) = httpClient.get("$DOG_API_END_POINT/breeds/$breedId")
+
+    /**
+     * TODO
+     */
+    suspend fun getImageById(imageId: String) = httpClient.get("$DOG_API_END_POINT/images/$imageId")
 }

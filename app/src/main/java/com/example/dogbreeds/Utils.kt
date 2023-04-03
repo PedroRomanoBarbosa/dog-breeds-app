@@ -21,7 +21,7 @@ fun BreedDTO.toDomain() = Breed(
     id = id,
     name = name,
     imageUrl = image?.url,
-    category = breedGroup,
+    category = breed_group,
     origin = origin,
     temperament = temperament,
 )
@@ -30,7 +30,7 @@ fun BreedDTO.toLocal(page: Int, total: Int) = BreedLocal(
     id = id,
     name = name,
     imageUrl = image?.url,
-    category = breedGroup,
+    category = breed_group,
     origin = origin,
     temperament = temperament,
     page,

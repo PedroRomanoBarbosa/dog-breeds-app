@@ -31,6 +31,8 @@ import com.example.dogbreeds.ui.compose.composables.Search
 import com.example.dogbreeds.ui.launchBreedDetailsActivity
 import com.example.dogbreeds.viewmodels.BreedsViewModel
 import com.example.dogbreeds.viewmodels.HomeViewModel
+import com.example.dogbreeds.viewmodels.SearchViewModel
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.compose.koinViewModel
@@ -90,7 +92,8 @@ enum class DisplayMode {
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
-    breedsViewModel: BreedsViewModel = koinViewModel()
+    breedsViewModel: BreedsViewModel = koinViewModel(),
+    searchViewModel: SearchViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
 
@@ -101,6 +104,13 @@ fun HomeScreen(
         breedsViewModel.navigation.onEach {
             when(it) {
                 is BreedsViewModel.Navigation.BreedDetailsScreen -> {
+                    launchBreedDetailsActivity(context, it.id, it.name)
+                }
+            }
+        }.launchIn(this)
+        searchViewModel.navigation.onEach {
+            when(it) {
+                is SearchViewModel.Navigation.BreedDetailsScreen -> {
                     launchBreedDetailsActivity(context, it.id, it.name)
                 }
             }
@@ -152,7 +162,7 @@ fun HomeScreen(
                     Breeds(breedsViewModel, displayMode)
                 }
                 composable(Screen.Search.route) {
-                    Search()
+                    Search(searchViewModel)
                 }
             }
             AnimatedVisibility(

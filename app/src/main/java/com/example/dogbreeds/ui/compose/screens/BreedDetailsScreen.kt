@@ -21,6 +21,7 @@ import com.example.dogbreeds.viewmodels.BreedDetailsViewModel
 
 @Composable
 fun Details(
+    loading: Boolean,
     name: String,
     imageUrl: String? = null,
     origin: String? = null,
@@ -33,17 +34,21 @@ fun Details(
                 .background(Color.LightGray)
                 .fillMaxWidth()
         ) {
-            imageUrl?.let {
+            if (loading) {
+                Box(modifier = Modifier.background(Color.LightGray).height(200.dp).fillMaxWidth()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.White,
+                    )
+                }
+            } else {
                 AsyncImage(
-                    modifier = Modifier.fillMaxSize().heightIn(min = 200.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .heightIn(min = 200.dp),
                     contentScale = ContentScale.Crop,
                     model = imageUrl,
                     contentDescription = "",
-                )
-            } ?: run {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.White,
                 )
             }
         }
@@ -93,7 +98,7 @@ fun BreedDetailsScreen(
         ) {
             when (val state = breedDetailsState.value) {
                 is BreedDetailsViewModel.State.Loading -> {
-                    Details(name = state.name)
+                    Details(name = state.name, loading = true)
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.Black,
@@ -101,6 +106,7 @@ fun BreedDetailsScreen(
                 }
                 is BreedDetailsViewModel.State.Details -> {
                     Details(
+                        loading = false,
                         name = state.name,
                         imageUrl = state.imageUrl,
                         category = state.category,

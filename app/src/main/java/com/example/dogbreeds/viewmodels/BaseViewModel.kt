@@ -30,7 +30,7 @@ abstract class BaseViewModel<S, N : ScreenNavigation, E : ViewModelEvent?>(
     val navigation = _navigation.asSharedFlow()
 
     protected val _state = MutableStateFlow(initialState)
-    val state = _state.asStateFlow()
+    open val state = _state.asStateFlow()
 
     protected val _event = MutableSharedFlow<E>()
     val event = _event.asSharedFlow()
