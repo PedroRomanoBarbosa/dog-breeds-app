@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 class BreedsRepository(
     private val api: DogApiClient,
     private val database: AppDatabase,
+    private val networkRepository: NetworkRepository,
 ) : IBreedsRepository {
     companion object {
         const val TAG = "BreedsRepository"
@@ -42,17 +43,24 @@ class BreedsRepository(
     }
 
     override suspend fun searchBreedsByTerm(term: String): List<Breed> {
-        // TODO
+        if (networkRepository.networkAvailable.value) {
+            runCatching {
+                val response = withContext(Dispatchers.IO) {
+                    enableRequestDelay()
 
-        val response = withContext(Dispatchers.IO) {
-            enableRequestDelay()
+                    api.searchBreeds(term)
+                }
 
-            api.searchBreeds(term)
+                val breedsDTO: List<BreedDTO> = response.body()
+
+                return breedsDTO.map { it.toDomain() }
+            }.onFailure {
+                return emptyList()
+            }
         }
 
-        val breedsDTO: List<BreedDTO> = response.body()
-
-        return breedsDTO.map { it.toDomain() }
+        // TODO Search from local database
+        return emptyList()
     }
 
     override suspend fun getBreedPage(pageIndex: Int, refresh: Boolean) = flow {

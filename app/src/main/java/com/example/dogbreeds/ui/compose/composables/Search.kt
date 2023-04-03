@@ -55,7 +55,7 @@ fun Search(
             )
         }
 
-        if (query.isEmpty()) {
+        if (text.isBlank()) {
             InfoSection(
                 modifier = Modifier.weight(1f).padding(16.dp),
                 iconRes = R.drawable.baseline_search_24,
