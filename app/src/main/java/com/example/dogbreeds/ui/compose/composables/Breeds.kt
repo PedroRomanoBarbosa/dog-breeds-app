@@ -166,6 +166,9 @@ fun Breeds(
             modifier = Modifier.align(Alignment.TopCenter),
         )
 
-        SnackbarHost(hostState = snackbarHostState)
+        SnackbarHost(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            hostState = snackbarHostState
+        )
     }
 }
