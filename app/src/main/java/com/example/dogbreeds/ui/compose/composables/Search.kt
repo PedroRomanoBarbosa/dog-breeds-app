@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,11 +36,14 @@ fun Search(
             trailingIcon = {
                 if (text.isNotEmpty()) {
                     IconButton(onClick = { searchViewModel.clearSearch() }) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Clear search")
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.content_description_clear_search),
+                        )
                     }
                 }
             },
-            placeholder = { Text(text = "Search for a breed name") },
+            placeholder = { Text(text = stringResource(R.string.search_placeholder_text)) },
             modifier = Modifier.fillMaxWidth(),
             value = text,
             onValueChange = { searchViewModel.setSearchText(it) },
@@ -54,10 +58,10 @@ fun Search(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_error_24),
-                        contentDescription = "",
+                        painter = painterResource(R.drawable.baseline_error_24),
+                        contentDescription = stringResource(R.string.content_description_warning_icon),
                     )
-                    Text(textAlign = TextAlign.Center, text = "There are no dog breeds whose name matches this query")
+                    Text(textAlign = TextAlign.Center, text = stringResource(R.string.search_empty))
                 }
             }
         }
@@ -74,11 +78,11 @@ fun Search(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(text = item.title, fontWeight = FontWeight.Bold)
                             for (detail in item.details) {
-                                val text = when(detail) {
-                                    is SearchViewModel.Detail.Category -> "Category"
-                                    is SearchViewModel.Detail.Origin -> "Origin"
+                                val value = when(detail) {
+                                    is SearchViewModel.Detail.Category -> stringResource(R.string.category)
+                                    is SearchViewModel.Detail.Origin -> stringResource(R.string.origin)
                                 }
-                                Text("$text: ${detail.value}")
+                                Text("$value: ${detail.value}")
                             }
                         }
                     }

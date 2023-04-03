@@ -2,18 +2,25 @@
     <string name="app_name">Dog Breeds</string>
     <string name="breeds">Breeds</string>
     <string name="search">Search</string>
-
-    <string name="article_image">article image</string>
-    <string name="retry">Retry</string>
-    <string name="no_headlines">There are no headlines. Please try again.</string>
-    <string name="go_to_network_settings">Go to network settings</string>
-    <string name="there_is_no_connection">There is no connection</string>
-    <string name="load_failed">Loading articles failed</string>
-    <string name="load_more_failed">Loading more articles failed</string>
-    <string name="refresh_failed">Refreshing feed failed</string>
+    <string name="no_network_connection">There is no network connection</string>
+    <string name="error_occurred">An error has occurred. Check internet settings</string>
+    <string name="open">Open</string>
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
+    <string name="search_placeholder_text">Search for a breed name</string>
+    <string name="search_empty">There are no dog breeds whose name matches this query</string>
+    <string name="category">Category</string>
+    <string name="origin">Origin</string>
+    <string name="temperament">Temperament</string>
+    <string name="breed_details_title">%s Details</string>
 
     <!-- Content Description -->
+    <string name="content_description_breed_tab">Breeds tab button</string>
+    <string name="content_description_search_tab">Search tab button</string>
     <string name="content_description_back_button">navigate to previous screen</string>
     <string name="content_description_list_view_button">List view button</string>
     <string name="content_description_grid_view_button">Grid view button</string>
+    <string name="content_description_breed_image">image of breed %s</string>
+    <string name="content_description_clear_search">Clear search</string>
+    <string name="content_description_warning_icon">Warning icon</string>
 </resources>

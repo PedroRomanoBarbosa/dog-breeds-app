@@ -18,9 +18,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.dogbreeds.R
 import com.example.dogbreeds.ui.compose.screens.DisplayMode
 import com.example.dogbreeds.ui.launchNetworkSettings
 import com.example.dogbreeds.viewmodels.BreedsViewModel
@@ -48,8 +50,8 @@ fun Breeds(
     LaunchedEffect(Unit) {
         breedsViewModel.event.onEach {
             val result = snackbarHostState.showSnackbar(
-                message = "An error has occurred. Check internet settings",
-                actionLabel = "Open",
+                message = context.getString(R.string.error_occurred),
+                actionLabel = context.getString(R.string.open),
             )
 
             if (result == SnackbarResult.ActionPerformed) launchNetworkSettings(context)
@@ -104,7 +106,10 @@ fun Breeds(
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop,
                                 model = breedItem?.imageUrl,
-                                contentDescription = "breed ${breedItem?.label}",
+                                contentDescription =  stringResource(
+                                    id = R.string.content_description_breed_image,
+                                    breedItem?.label ?: String(),
+                                ),
                             )
                             breedItem?.let {
                                 Box(
@@ -131,7 +136,7 @@ fun Breeds(
                                         )
                                         .padding(8.dp)
                                 ) {
-                                    Text("")
+                                    Text(String())
                                 }
                             }
                         }
@@ -142,11 +147,11 @@ fun Breeds(
 
         Row(modifier = Modifier.align(Alignment.TopCenter)) {
             Button(enabled = breedsState.value.previousEnabled, onClick = { breedsViewModel.previousPage() }) {
-                Text(text = "Prev")
+                Text(text = stringResource(id = R.string.prev))
             }
             Text(text = "Page: ${breedsState.value.currentPageIndex + 1}")
             Button(enabled = breedsState.value.nextEnabled, onClick = { breedsViewModel.nextPage() }) {
-                Text(text = "Next")
+                Text(text = stringResource(id = R.string.next))
             }
         }
 

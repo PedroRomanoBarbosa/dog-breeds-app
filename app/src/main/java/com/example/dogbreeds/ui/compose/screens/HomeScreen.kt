@@ -32,7 +32,6 @@ import com.example.dogbreeds.ui.launchBreedDetailsActivity
 import com.example.dogbreeds.viewmodels.BreedsViewModel
 import com.example.dogbreeds.viewmodels.HomeViewModel
 import com.example.dogbreeds.viewmodels.SearchViewModel
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.compose.koinViewModel
@@ -140,16 +139,26 @@ fun HomeScreen(
                     onClick = {
                         navController.navigate(Screen.Breeds.route)
                     },
-                    label = { Text(text = "Breeds") },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "") }
+                    label = { Text(text = stringResource(Screen.Breeds.resourceId)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = stringResource(R.string.content_description_breed_tab),
+                        )
+                    }
                 )
                 NavigationBarItem(
                     selected = currentDestination?.hierarchy?.any { it.route == Screen.Search.route } == true,
                     onClick = {
                         navController.navigate(Screen.Search.route)
                     },
-                    label = { Text(text = "Search") },
-                    icon = { Icon(Icons.Default.Search, contentDescription = "") }
+                    label = { Text(text = stringResource(Screen.Search.resourceId)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.content_description_search_tab),
+                        )
+                    }
                 )
             }
         }
@@ -177,7 +186,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Red),
-                    text = "No network connection",
+                    text = stringResource(R.string.no_network_connection),
                 )
             }
         }

@@ -23,7 +23,7 @@ class SearchViewModel(
 ) {
     private var searchJob: Job? = null
 
-    private val _textSearch = MutableStateFlow("")
+    private val _textSearch = MutableStateFlow(String())
 
     init {
         _textSearch.onEach {

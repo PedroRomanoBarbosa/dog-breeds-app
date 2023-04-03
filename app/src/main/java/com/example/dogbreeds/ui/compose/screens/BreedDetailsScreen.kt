@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.dogbreeds.R
 import com.example.dogbreeds.buildLabelText
 import com.example.dogbreeds.viewmodels.BreedDetailsViewModel
 
@@ -39,7 +41,10 @@ fun Details(
                 .fillMaxWidth()
         ) {
             if (loading) {
-                Box(modifier = Modifier.background(Color.LightGray).height(200.dp).fillMaxWidth()) {
+                Box(modifier = Modifier
+                    .background(Color.LightGray)
+                    .height(200.dp)
+                    .fillMaxWidth()) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.White,
@@ -52,7 +57,7 @@ fun Details(
                         .heightIn(min = 200.dp),
                     contentScale = ContentScale.Crop,
                     model = imageUrl,
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.content_description_breed_image),
                 )
             }
         }
@@ -68,13 +73,16 @@ fun Details(
 
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 64.dp)) {
             if (category?.isNotEmpty() == true) {
-                Text(buildLabelText("Category: ", category), fontSize = 18.sp)
+                val label = stringResource(R.string.category)
+                Text(buildLabelText("$label: ", category), fontSize = 18.sp)
             }
             if (origin?.isNotEmpty() == true) {
-                Text(buildLabelText("Origin: ", origin), fontSize = 18.sp)
+                val label = stringResource(R.string.origin)
+                Text(buildLabelText("$label: ", origin), fontSize = 18.sp)
             }
             if (temperament?.isNotEmpty() == true) {
-                Text(buildLabelText("Temperament: ", temperament), fontSize = 18.sp)
+                val label = stringResource(R.string.temperament)
+                Text(buildLabelText("$label: ", temperament), fontSize = 18.sp)
             }
         }
     }
@@ -94,7 +102,7 @@ fun BreedDetailsScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = { BackAppBarButton(onBack) },
-                title = { Text(text = "$name Details") },
+                title = { Text(text = stringResource(R.string.breed_details_title, name)) },
             )
         },
     ) { innerPadding ->
@@ -133,7 +141,7 @@ fun BreedDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Red),
-                    text = "No network connection",
+                    text = stringResource(R.string.no_network_connection),
                 )
             }
         }
