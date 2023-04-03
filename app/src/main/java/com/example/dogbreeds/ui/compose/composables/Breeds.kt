@@ -78,7 +78,7 @@ fun Breeds(
             LazyVerticalGrid(
                 modifier = Modifier.weight(1f),
                 columns = GridCells.Fixed(gridCellsNumber),
-                contentPadding = PaddingValues(top = 64.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                contentPadding = PaddingValues(top = 100.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 userScrollEnabled = !refreshing,
@@ -145,14 +145,16 @@ fun Breeds(
             }
         }
 
-        Row(modifier = Modifier.align(Alignment.TopCenter)) {
-            Button(enabled = breedsState.value.previousEnabled, onClick = { breedsViewModel.previousPage() }) {
-                Text(text = stringResource(id = R.string.prev))
-            }
-            Text(text = "${breedsState.value.currentPageIndex + 1}/${breedsState.value.totalPages}")
-            Button(enabled = breedsState.value.nextEnabled, onClick = { breedsViewModel.nextPage() }) {
-                Text(text = stringResource(id = R.string.next))
-            }
+        with(breedsState.value) {
+            PageControlPanel(
+                currentPageIndex,
+                totalPages,
+                previousEnabled,
+                nextEnabled,
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = 28.dp),
+                onNext = { breedsViewModel.nextPage() },
+                onPrevious = { breedsViewModel.previousPage() },
+            )
         }
 
         if (refreshing) Box(modifier = Modifier
