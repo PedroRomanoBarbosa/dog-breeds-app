@@ -8,12 +8,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dogbreeds.R
 import com.example.dogbreeds.viewmodels.SearchViewModel
@@ -31,7 +28,7 @@ fun Search(
     val query = state.value.query
     val noItems = state.value.searchBreedItems.isEmpty()
 
-    Column(Modifier.padding(start = 16.dp, end = 16.dp)) {
+    Column(Modifier.padding(top = 36.dp, start = 16.dp, end = 16.dp)) {
         TextField(
             trailingIcon = {
                 if (text.isNotEmpty()) {
@@ -50,20 +47,20 @@ fun Search(
         )
 
         if (query.isNotEmpty() && !loading && noItems) {
-            Box(modifier = Modifier.weight(1f)) {
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_error_24),
-                        contentDescription = stringResource(R.string.content_description_warning_icon),
-                    )
-                    Text(textAlign = TextAlign.Center, text = stringResource(R.string.search_empty))
-                }
-            }
+            InfoSection(
+                modifier = Modifier.weight(1f).padding(16.dp),
+                iconRes = R.drawable.baseline_error_24,
+                messageRes = R.string.search_empty,
+                contentDescriptionRes = R.string.content_description_warning_icon,
+            )
+        }
+
+        if (query.isEmpty()) {
+            InfoSection(
+                modifier = Modifier.weight(1f).padding(16.dp),
+                iconRes = R.drawable.baseline_search_24,
+                messageRes = R.string.start_search,
+            )
         }
         
         if (!noItems) {
