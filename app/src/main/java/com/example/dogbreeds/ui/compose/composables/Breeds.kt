@@ -45,16 +45,23 @@ fun Breeds(
     val hasNetwork = breedsState.value.hasNetwork
 
     // Snackbar setup
+    // TODO Extract the whole snackbar composables and logic as its own composable
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         breedsViewModel.event.onEach {
-            val result = snackbarHostState.showSnackbar(
-                message = context.getString(R.string.error_occurred),
-                actionLabel = context.getString(R.string.open),
-            )
+            when(it) {
+                BreedsViewModel.Event.FAILED_TO_LOAD -> {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    val result = snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.error_occurred),
+                        actionLabel = context.getString(R.string.open),
+                        duration = SnackbarDuration.Short,
+                    )
 
-            if (result == SnackbarResult.ActionPerformed) launchNetworkSettings(context)
+                    if (result == SnackbarResult.ActionPerformed) launchNetworkSettings(context)
+                }
+            }
         }.launchIn(scope)
     }
 

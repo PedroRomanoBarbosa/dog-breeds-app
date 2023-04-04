@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +24,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.dogbreeds.R
 import com.example.dogbreeds.buildLabelText
+import com.example.dogbreeds.ui.launchNetworkSettings
 import com.example.dogbreeds.viewmodels.BreedDetailsViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun Details(
@@ -94,9 +98,32 @@ fun BreedDetailsScreen(
     breedDetailsViewModel: BreedDetailsViewModel = viewModel(),
     onBack: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     val breedDetailsState = breedDetailsViewModel.state.collectAsState()
     val name = breedDetailsState.value.name
     val detailsSection = breedDetailsState.value.detailsSection
+
+    // Snackbar setup
+    // TODO Extract the whole snackbar composables and logic as its own composable
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(Unit) {
+        breedDetailsViewModel.event.onEach {
+            when(it) {
+                BreedDetailsViewModel.Event.BREED_LOAD_FAILED -> {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    val result = snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.error_occurred),
+                        actionLabel = context.getString(R.string.open),
+                        duration = SnackbarDuration.Short,
+                    )
+
+                    if (result == SnackbarResult.ActionPerformed) launchNetworkSettings(context)
+                }
+            }
+        }.launchIn(scope)
+    }
 
     Scaffold(
         topBar = {
@@ -144,6 +171,11 @@ fun BreedDetailsScreen(
                     text = stringResource(R.string.no_network_connection),
                 )
             }
+
+            SnackbarHost(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                hostState = snackbarHostState
+            )
         }
     }
 }
