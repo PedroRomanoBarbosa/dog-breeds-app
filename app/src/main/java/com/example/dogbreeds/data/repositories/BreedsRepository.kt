@@ -44,8 +44,8 @@ class BreedsRepository(
 
     // TODO Could implement here a pagination as well but with a load more instead of next/prev keys
     override suspend fun searchBreedsByTerm(term: String): Result<List<Breed>> {
-        if (networkRepository.networkAvailable.value) {
-            runCatching {
+        return runCatching {
+            if (networkRepository.networkAvailable.value) {
                 val response = withContext(Dispatchers.IO) {
                     enableRequestDelay()
 
@@ -54,29 +54,34 @@ class BreedsRepository(
 
                 val breedsDTO: List<BreedDTO> = response.body()
 
-                return Result.success(breedsDTO.map { it.toDomain() })
-            }.onFailure {
-                return Result.failure(it)
-            }
-        }
+                Result.success(breedsDTO.map { it.toDomain() })
+            } else {
+                val breeds = withContext(Dispatchers.IO) {
+                    database.breedsDao().searchBreedsByName(term)
+                }
 
-        // TODO Search from local database
-        return Result.success(emptyList())
+                Result.success(breeds.map { it.toDomain() })
+            }
+        }.getOrElse {
+            Result.failure(it)
+        }
     }
 
     override suspend fun getBreedPage(pageIndex: Int, refresh: Boolean) = flow {
-        if (!refresh) {
-            emit(
-                Result.success(
-                    BreedPage(
-                        hasPrev = pageIndex > 0,
-                        hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
-                        breeds = List(PAGE_LIMIT) { null },
-                        totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
-                    )
+        // Emit placeholder data first
+        emit(
+            Result.success(
+                BreedPage(
+                    hasPrev = pageIndex > 0,
+                    hasNext = hasNextPage(pageIndex, PAGE_LIMIT, paginationCount),
+                    breeds = List(PAGE_LIMIT) { null },
+                    totalPages = calculateTotalPages(paginationCount, PAGE_LIMIT),
                 )
             )
+        )
 
+        // If there is no refresh requested just fetch data from local database
+        if (!refresh) {
             val localBreeds = withContext(Dispatchers.IO) {
                 database.breedsDao().getBreedsByPage(pageIndex)
             }

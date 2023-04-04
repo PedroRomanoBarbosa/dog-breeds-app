@@ -92,7 +92,7 @@ fun Breeds(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(itemHeight)
-                            .then(if (loading) Modifier.shimmer() else Modifier),
+                            .then(if (loading || refreshing) Modifier.shimmer() else Modifier),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                         enabled = breedItem != null,
                         onClick = {

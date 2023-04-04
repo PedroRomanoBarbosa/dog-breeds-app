@@ -29,6 +29,9 @@ interface BreedsDao {
     @Query("SELECT * FROM $BREED_TABLE WHERE id = :breedId")
     fun getBreedById(breedId: Int): BreedLocal
 
+    @Query("SELECT * FROM $BREED_TABLE WHERE name LIKE '%' || :term || '%'")
+    fun searchBreedsByName(term: String): List<BreedLocal>
+
     @Query("DELETE FROM $BREED_TABLE")
     suspend fun clearAll()
 }
