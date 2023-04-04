@@ -1,5 +1,6 @@
 package com.example.dogbreeds.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.dogbreeds.NetworkRepository
 import kotlinx.coroutines.flow.launchIn
@@ -17,6 +18,8 @@ class HomeViewModel(
 ) {
     init {
         networkRepository.networkAvailable.onEach { hasNetwork ->
+            Log.d(tag, "hasNetwork=$hasNetwork")
+
             _state.update { it.copy(hasNetwork = hasNetwork) }
         }.launchIn(viewModelScope)
     }

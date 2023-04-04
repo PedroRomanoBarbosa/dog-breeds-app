@@ -25,16 +25,28 @@ class BreedDetailsViewModel(
     tag = "BreedDetailsViewModel"
 ) {
     init {
+        Log.d(tag, "Init")
+
         networkRepository.networkAvailable.onEach { hasNetwork ->
+            Log.d(tag, "hasNetwork=$hasNetwork")
+
             _state.update { it.copy(hasNetwork = hasNetwork) }
         }.launchIn(viewModelScope)
+
+        Log.d(tag, "Loading breed with breedId=$breedId")
 
         viewModelScope.launch {
             val breed = runCatching {
                 breedsRepository.getBreedById(breedId)
-            }.onFailure {
+            }.getOrElse {
                 Log.e(tag, "Error occurred when retrieving breed by id=$breedId", it)
-            }.getOrNull() ?: return@launch
+
+                _event.emit(Event.BREED_LOAD_FAILED)
+
+                return@launch
+            }
+
+            Log.e(tag, "Breed loading successful. breed=$breedId")
 
             with(breed) {
                 _state.update {
@@ -79,5 +91,7 @@ class BreedDetailsViewModel(
     /**
      * Breed Details Event
      */
-    enum class Event : ViewModelEvent
+    enum class Event : ViewModelEvent {
+        BREED_LOAD_FAILED
+    }
 }

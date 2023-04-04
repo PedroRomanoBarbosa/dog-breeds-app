@@ -27,6 +27,8 @@ class SearchViewModel(
     private val _textSearch = MutableStateFlow(String())
 
     init {
+        Log.d(tag, "Init")
+
         _textSearch.onEach {
             _state.update { state ->
                 state.copy(
@@ -39,6 +41,8 @@ class SearchViewModel(
         }.launchIn(viewModelScope)
 
         _textSearch.debounce(DEBOUNCE_DELAY_MS).onEach {
+            Log.d(tag, "debouncedText=$it")
+
             if (it.isNotBlank()) {
                 _state.update { state -> state.copy(query = it) }
 
@@ -47,11 +51,15 @@ class SearchViewModel(
         }.launchIn(viewModelScope)
 
         networkRepository.networkAvailable.onEach {
+            Log.d(tag, "hasNetwork=$it")
+
             _state.update { state -> state.copy(hasNetwork = it) }
         }.launchIn(viewModelScope)
     }
 
     private fun search(term: String) {
+        Log.d(tag, "Start searching for term=$term")
+
         _state.update { it.copy(loading = true) }
 
         searchJob?.cancel()
@@ -66,6 +74,8 @@ class SearchViewModel(
 
                 return@launch
             }
+
+            Log.d(tag, "search successful. breedsTotal=${breeds.size}")
 
             _state.update { state ->
                 state.copy(
@@ -86,6 +96,8 @@ class SearchViewModel(
     }
 
     fun clearSearch() {
+        Log.d(tag, "Clearing search")
+
         _state.update {
             it.copy(
                 searchBreedItems = emptyList(),
@@ -96,6 +108,8 @@ class SearchViewModel(
     }
 
     fun onSearchBreedClick(breedId: Int, name: String) {
+        Log.d(tag, "Breed with breedId=$breedId and name=$name was clicked")
+
         viewModelScope.launch {
             _navigation.emit(Navigation.BreedDetailsScreen(id = breedId, name))
         }
