@@ -1,5 +1,6 @@
 package com.example.dogbreeds.data.repositories
 
+import android.util.Log
 import com.example.dogbreeds.*
 import com.example.dogbreeds.Configuration.PAGE_LIMIT
 import com.example.dogbreeds.data.datasources.persistence.AppDatabase
@@ -29,9 +30,13 @@ class BreedsRepository(
     private var paginationCount = 0
 
     override suspend fun getBreedById(breedId: Int) = withContext(Dispatchers.IO) {
+        Log.d(TAG, "Getting breed with breedId=$breedId")
+
         runCatching {
             database.breedsDao().getBreedById(breedId).toDomain()
         }.getOrElse {
+            Log.d(TAG, "Local fetch failed")
+
             enableRequestDelay()
 
             val breedDTO: BreedDTO = api.getBreedById(breedId).body()
@@ -44,8 +49,12 @@ class BreedsRepository(
 
     // TODO Could implement here a pagination as well but with a load more instead of next/prev keys
     override suspend fun searchBreedsByTerm(term: String): Result<List<Breed>> {
+        Log.d(TAG, "Searching breeds with term=$term")
+
         return runCatching {
             if (networkRepository.networkAvailable.value) {
+                Log.d(TAG, "No network available to fetch remotely")
+
                 val response = withContext(Dispatchers.IO) {
                     enableRequestDelay()
 
@@ -63,11 +72,15 @@ class BreedsRepository(
                 Result.success(breeds.map { it.toDomain() })
             }
         }.getOrElse {
+            Log.e(TAG, "Fetching failed", it)
+
             Result.failure(it)
         }
     }
 
     override suspend fun getBreedPage(pageIndex: Int, refresh: Boolean) = flow {
+        Log.d(TAG, "Getting pages for pageIndex=$pageIndex and refresh=$refresh")
+
         // Emit placeholder data first
         emit(
             Result.success(
@@ -82,11 +95,15 @@ class BreedsRepository(
 
         // If there is no refresh requested just fetch data from local database
         if (!refresh) {
+            Log.d(TAG, "No refresh, load from database first")
+
             val localBreeds = withContext(Dispatchers.IO) {
                 database.breedsDao().getBreedsByPage(pageIndex)
             }
 
             if (localBreeds.isNotEmpty()) {
+                Log.d(TAG, "Local fetch successful. breedsSize=${localBreeds.size}")
+
                 paginationCount = localBreeds.first().total
 
                 emit(
@@ -104,6 +121,8 @@ class BreedsRepository(
             }
         }
 
+        Log.d(TAG, "Refresh or local breeds returned empty")
+
         try {
             val response = withContext(Dispatchers.IO) {
                 enableRequestDelay()
@@ -113,6 +132,8 @@ class BreedsRepository(
 
             val breedDTOs: List<BreedDTO> = response.body()
             val total = response.headers["pagination-count"]?.toIntOrNull() ?: run {
+                Log.e(TAG, "Could not fetch pagination count from headers")
+
                 emit(
                     Result.failure(IllegalStateException("Invalid pagination count"))
                 )
@@ -120,6 +141,8 @@ class BreedsRepository(
                 return@flow
             }
             paginationCount = total
+
+            Log.d(TAG, "Save remote page locally")
 
             withContext(Dispatchers.IO) {
                 database.breedsDao().insertAll(
@@ -140,6 +163,8 @@ class BreedsRepository(
                 )
             )
         } catch (exception: Exception) {
+            Log.e(TAG, "Error fetching page", exception)
+
             emit(Result.failure(exception))
         }
     }
